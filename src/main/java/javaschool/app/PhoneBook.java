@@ -18,7 +18,6 @@ public class PhoneBook implements ShellDependent {
         r.setName(name);
         r.setEmail(email);
         r.addPhones(phones);
-
         recordList.add(r);
     }
 
@@ -27,8 +26,16 @@ public class PhoneBook implements ShellDependent {
         Note n = new Note();
         n.setName(name);
         n.setNote(note);
-
         recordList.add(n);
+    }
+
+    @Command
+    public void createReminder(String name, String txt, String time) {
+        Reminder rem = new Reminder();
+        rem.setName(name);
+        rem.setNote(txt);
+        rem.setTime(time);
+        recordList.add(rem);
     }
 
     @Command
@@ -49,8 +56,10 @@ public class PhoneBook implements ShellDependent {
             } else {
                 email = " ";
             }
+            if (name.contains(str) || email.contains(str)) {
+                result.add(r);
+            }
         }
-
         return result;
     }
 
@@ -81,5 +90,4 @@ public class PhoneBook implements ShellDependent {
     public void cliSetShell(Shell theShell) {
         this.theShell = theShell;
     }
-
 }

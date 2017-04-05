@@ -29,7 +29,6 @@ public class Person extends Record {
 
     @Override
     public String toString() {
-        return getId() + " " + getName() + " " + email + " " + phones;
+        return getId() + ") " + getName() + " - " + email + " - " + phones;
     }
-
 }
