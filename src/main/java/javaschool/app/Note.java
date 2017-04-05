@@ -18,4 +18,9 @@ public class Note extends Record {
     public String toString() {
         return getId() + ") " + getName() + " - " + note;
     }
+
+    @Override
+    public boolean contains(String str) {
+        return super.contains(str);
+    }
 }

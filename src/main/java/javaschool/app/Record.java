@@ -24,4 +24,8 @@ public abstract class Record {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean contains(String str) {
+        return name.contains(str);
+    }
 }
