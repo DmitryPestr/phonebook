@@ -6,11 +6,17 @@ import asg.cliche.ShellDependent;
 import asg.cliche.ShellFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PhoneBook implements ShellDependent {
-    private List<Record> recordList = new ArrayList<>();
+    private Map<Integer, Record> recordList = new HashMap<>();
+    private NavigableMap<String, Record> indexByName = new TreeMap<>();
+
+
+    @Command
+    public Collection<Record> findAfter(String str) {
+
+    }
 
     @Command
     public void createPerson(String name, String email, String... phones) {
@@ -18,7 +24,8 @@ public class PhoneBook implements ShellDependent {
         r.setName(name);
         r.setEmail(email);
         r.addPhones(phones);
-        recordList.add(r);
+        recordList.put(r.getId(), r);
+        indexByName.put(r.getName(), r);
     }
 
     @Command
@@ -26,7 +33,7 @@ public class PhoneBook implements ShellDependent {
         Note n = new Note();
         n.setName(name);
         n.setNote(note);
-        recordList.add(n);
+        recordList.put(n.getId(), n);
     }
 
     @Command
@@ -35,19 +42,24 @@ public class PhoneBook implements ShellDependent {
         rem.setName(name);
         rem.setNote(txt);
         rem.setTime(time);
-        recordList.add(rem);
+        recordList.put(rem.getId(), rem);
     }
 
     @Command
-    public List<Record> list() {
-        return recordList;
+    public Collection<Record> list() {
+        return recordList.values();
+    }
+
+    @Command
+    public Record show(int id) {
+        return recordList.get(id);
     }
 
     @Command
     public List<Record> find(String str) {
         str = str.toLowerCase();
         List<Record> result = new ArrayList<>();
-        for (Record r : recordList) {
+        for (Record r : recordList.values()) {
             if (r.contains(str)) {
                 result.add(r);
             }
@@ -57,7 +69,7 @@ public class PhoneBook implements ShellDependent {
 
     @Command
     public void addPhone(int id, String phone) {
-        for (Record r : recordList) {
+        for (Record r : recordList.values()) {
             if (r instanceof Person && r.getId() == id) {
                 Person p = (Person) r;
                 p.addPhones(phone);
@@ -66,16 +78,24 @@ public class PhoneBook implements ShellDependent {
         }
     }
 
+//    @Command
+//    public Record show (int id) {
+//        for (Record r :recordList) {
+//           if (r.getId() == id) {
+//                return r;
+//            }
+//        }
+//        return null;
+//    }
+
+
     @Command
     public void edit(int id) throws IOException {
-        for (Record r : recordList) {
-            if (r.getId() == id) {
-                ShellFactory.createSubshell("#" + id, theShell, "Edit record", r)
-                        .commandLoop();
-                break;
-            }
-        }
+        Record r = recordList.get(id);
+        ShellFactory.createSubshell("#" + id, theShell, "Edit record", r)
+                .commandLoop();
     }
+
     private Shell theShell;
 
     public void cliSetShell(Shell theShell) {
